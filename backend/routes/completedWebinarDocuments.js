@@ -28,7 +28,23 @@ router.get('/admin/webinars/:webinarId/completed-documents/download', async (req
     const CompletedWebinarDocuments = req.app.locals.CompletedWebinarDocuments;
     if (!CompletedWebinarDocuments) return res.status(500).json({ error: 'Documents model not configured' });
 
-    const doc = await CompletedWebinarDocuments.findOne({ webinarId });
+    let doc = await CompletedWebinarDocuments.findOne({ webinarId }).lean();
+    if (!doc) {
+      const LegacyCompletedWebinarDetails = req.app.locals.CompletedWebinarDetails;
+      if (LegacyCompletedWebinarDetails) {
+        const legacyDoc = await LegacyCompletedWebinarDetails.findOne({ webinarId }).lean();
+        if (legacyDoc) {
+          doc = {
+            ...legacyDoc,
+            attendanceSheet: legacyDoc.attendanceSheet || '',
+            signedReport: legacyDoc.signedReport || '',
+            signedReportName: legacyDoc.signedReportName || 'SignedReport.pdf',
+            eventImages: Array.isArray(legacyDoc.eventImages) ? legacyDoc.eventImages : [],
+          };
+        }
+      }
+    }
+
     if (!doc) return res.status(404).json({ error: 'Completed documents not found for this webinar' });
 
     const webinarTopic = (req.app.locals.Webinar?.topic || 'webinar').toString().trim();
@@ -66,6 +82,13 @@ router.get('/admin/webinars/:webinarId/completed-documents/download', async (req
     if (doc.attendanceSheet) {
       const buf = base64ToBuffer(doc.attendanceSheet);
       archive.append(buf, { name: 'AttendanceSheet.xlsx' });
+    }
+
+    // Copy of the signed report
+    if (doc.signedReport) {
+      const buf = base64ToBuffer(doc.signedReport);
+      const signedName = String(doc.signedReportName || 'SignedReport.pdf');
+      archive.append(buf, { name: signedName });
     }
 
     // Event images
