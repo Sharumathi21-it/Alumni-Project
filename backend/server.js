@@ -83,7 +83,7 @@ const adminRoutes = require('./routes/admin'); // Assuming your admin routes fil
 // Middleware 
 
 //Cors For Producion
-//app.use(cors({ origin: ["https://necalumni.nec.edu.in", "https://necalumni.nec.edu.in/alumnimain"], credentials: true }));
+// app.use(cors({ origin: ["https://necalumni.nec.edu.in", "https://necalumni.nec.edu.in/alumnimain"], credentials: true }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 
 // uploads folder
