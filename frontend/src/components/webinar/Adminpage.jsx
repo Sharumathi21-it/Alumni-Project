@@ -896,6 +896,7 @@ const Adminpage = ({ userEmail }) => {
     const exportData = filteredCompletedDocsRows.map((row, idx) => {
       const registeredCount = row.registeredCount ?? row.reg_count ?? 'N/A';
       const attendedCount = row.attendedCount ?? row.attended ?? 'N/A';
+      const absenteeCount = row.absenteeCount ?? 'NIL';
       const docsAvailable = row.hasDocuments ?? row.documentsAvailable ?? false;
 
       return {
@@ -906,6 +907,7 @@ const Adminpage = ({ userEmail }) => {
         'Webinar Date': row.webinarDate ? new Date(row.webinarDate).toLocaleDateString() : 'N/A',
         'Registered Count': registeredCount,
         'Attended Count': attendedCount,
+        'Absentees Count': absenteeCount,
         'Documents Available': docsAvailable ? 'Yes' : 'No',
       };
     });
@@ -1073,7 +1075,7 @@ const Adminpage = ({ userEmail }) => {
             </div>
 
             <div className="table-scroll-wrap webinar-table-desktop" style={{ overflowX: 'auto', width: '100%', marginTop: '1rem' }}>
-              <table className="admin-data-table webinar-table" style={{ minWidth: '1100px', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+              <table className="admin-data-table webinar-table" style={{ minWidth: '1210px', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                 <thead>
                   <tr style={{ backgroundColor: '#eee' }}>
                     <th style={{ minWidth: '90px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Phase ID</th>
@@ -1082,23 +1084,25 @@ const Adminpage = ({ userEmail }) => {
                     <th style={{ minWidth: '160px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Webinar Date</th>
                     <th style={{ minWidth: '130px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Registered Count</th>
                     <th style={{ minWidth: '110px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Attended Count</th>
+                    <th style={{ minWidth: '130px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Absentees Count</th>
                     <th style={{ minWidth: '160px', padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>Documents</th>
                   </tr>
                 </thead>
                 <tbody>
                   {completedDocsLoading ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>Loading completed docs...</td>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>Loading completed docs...</td>
                     </tr>
                   ) : filteredCompletedDocsRows.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>No completed webinar documents found for the selected filters.</td>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No completed webinar documents found for the selected filters.</td>
                     </tr>
                   ) : (
                     filteredCompletedDocsRows.map((row, idx) => {
                       const webinarId = row.webinarId;
                       const registeredCount = row.registeredCount ?? row.reg_count ?? 'N/A';
                       const attendedCount = row.attendedCount ?? row.attended ?? 'N/A';
+                      const absenteeCount = row.absenteeCount ?? 'NIL';
                       const docsAvailable = row.hasDocuments ?? row.documentsAvailable ?? false;
 
                       return (
@@ -1109,6 +1113,7 @@ const Adminpage = ({ userEmail }) => {
                           <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>{row.webinarDate ? new Date(row.webinarDate).toLocaleDateString() : 'N/A'}</td>
                           <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>{registeredCount}</td>
                           <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>{attendedCount}</td>
+                          <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>{absenteeCount}</td>
                           <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
                             {docsAvailable ? (
                               <a
